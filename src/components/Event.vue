@@ -1,6 +1,7 @@
 <template>
-    <div class="event">
+    <div class="event" :class="{show : true }">
         <p>{{ text }}</p>
+        <button>닫기</button>
     </div>
 </template>
 <script>
@@ -8,7 +9,13 @@ export default {
     name: 'EventComponent',
     props: {
         text: String,
+        isEventOpen: Boolean,
     },
+    data(){
+        return {
+            isOpen : false,
+        }
+    }
 }
 </script>
 <style>
@@ -20,7 +27,14 @@ export default {
         font-size: small;
     }
 
+    .show{
+        display: flex;
+    }
     .event p {
+        margin: 0;
+    }
+
+    .event button{
         margin: 0;
     }
 </style>

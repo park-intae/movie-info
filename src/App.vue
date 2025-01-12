@@ -1,22 +1,14 @@
 <template>
   <Navbar />
-  <Event text="NEPLIX 강렬한 운명의 드라마, 경기크리쳐"/>
-  <h1>영화정보</h1>
-  <div v-for="(movie, i) in data" :key="i">
-    <figure>
-      <img :src="`${movie.imgUrl}`" :alt="movie.title" class="item"/>
-    </figure>
-    <div class="info">
-      <h3 class="bg-yellow" :style="textRed">{{ movie.title }}</h3>
-      <p>개봉: {{ movie.year }}</p>
-      <p>장르: {{ movie.category }}</p>
-      <button @click="increaseLike(i)">좋아요</button
-      ><span>{{ movie.like }}</span>
-      <p>
-        <button @click="isModal=true; selectedMovie=i">상세보기</button>
-      </p>
-    </div>
-  </div>
+  <Event :text="text"/>
+  <Searchbar :data="data_temp" @searchMovie="searchMovie($event)"/>
+  <p>
+    <button @click="showAllMovie">전체보기</button>
+  </p>
+  <Movie
+    :data="data_temp"
+    @opemModal="isModal=true;selectedMovie=$event"
+    @increaseLike="increaseLike($event)"/>
 
   <Modal
     :data="data"
@@ -30,24 +22,42 @@ import data from './assets/movies.js';
 import Navbar from './components/Navbar.vue';
 import Modal from './components/Modal.vue';
 import Event from './components/Event.vue';
+import Movie from './components/Movie.vue';
+import Searchbar from './components/Searchbar.vue';
 export default {
   name: "App",
   data() {
     return {
       isModal: false,
-      data: data,
+      data: data, //원본
+      data_temp: [...data], //사본
       selectedMovie: 0,
+      text: "NEPLIX 강렬한 운명의 드라마, 경기크리쳐",
     };
   },
   methods: {
     increaseLike(i) {
-      this.data[i].like++;
+      this.data.find(movie => {
+        if(movie.id === i) {
+          movie.like++;
+        }
+      });
     },
+    searchMovie(title){
+      this.data_temp = this.data.filter((movie) => {
+        return movie.title.includes(title);
+      });
+    },
+    showAllMovie(){
+      this.data_temp = [...this.data];
+    }
   },
   components:{
     Navbar: Navbar,
     Event: Event,
     Modal: Modal,
+    Movie: Movie,
+    Searchbar: Searchbar,
   }
 };
 </script>
